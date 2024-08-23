@@ -52,7 +52,7 @@ class APF_IMP:
         return curr_drone_pos    
 
     def simulate(self, num_drones=2, start_pos=(-3,1), goal_pose=(6,-1), obstacles_pos=[[0.305,0.528],[-0.305, -0.528]], \
-                  r_apf_list=[0.5, 0.5], r_imp_list=[0.18, 0.18], d_sep=0.5, step=0.1, plot=True):
+                  r_apf_list=[0.5, 0.5], r_imp_list=[0.18, 0.18], d_sep=0.5, step=0.1, plot=True, trail_drones=[1], rotation=0):
         '''
         change APF parameters in function call
         k_att => attraction force
@@ -130,6 +130,8 @@ class APF_IMP:
             count = count + 1
         leader_trail_x = []
         leader_trail_y = []
+        drone_trail_x = {f'Drone_{i+1}': [] for i in range(num_drones)}
+        drone_trail_y = {f'Drone_{i+1}': [] for i in range(num_drones)}
 
         drone_poses_dict = {f'Drone_{i+1}': [] for i in range(num_drones)}
 
@@ -153,7 +155,8 @@ class APF_IMP:
             poses = []
             for s in range(num_drones):
                 leader_pose = leader_pose_temp[frame]
-                drone_pose = leader_pose + np.array([-L_distance * np.cos((2*np.pi*s)/num_drones), L_distance * np.sin((2*np.pi*s)/num_drones), 0]) + 0.2 * imp_pose[s, :] 
+                angle = (2*np.pi*s)/num_drones + rotation
+                drone_pose = leader_pose + np.array([-L_distance * np.cos(angle), L_distance * np.sin(angle), 0]) + 0.2 * imp_pose[s, :] 
                 obstacle_avoided = False
                 # Check if drone is within any obstacle circle
 
@@ -162,7 +165,7 @@ class APF_IMP:
                     obstacle_center = obstacle_circle.center
                     rr_imp = r_imp_list[i // 2]  # Assuming each obstacle has an associated radius
                     
-                    if np.linalg.norm(drone_pose[:2] - obstacle_center) < (rr_imp + 0.1):
+                    if np.linalg.norm(drone_pose[:2] - obstacle_center) < (rr_imp + 0.2):
                         obstacle_avoided = True
                         # Move drone away from obstacle                    
                         drone_pose[:2] = self.impedance_obs(drone_pose[:2], obstacle_center, rr_imp, imp_vel_prev, 1) 
@@ -183,6 +186,10 @@ class APF_IMP:
                 poses.append(drone_pose)
                 drone_poses_dict[f'Drone_{s+1}'].append(drone_pose)
 
+                if s+1 in trail_drones:
+                    drone_trail_x[f'Drone_{s+1}'].append(drone_pose[0])
+                    drone_trail_y[f'Drone_{s+1}'].append(drone_pose[1])
+
             # Plot trails of the leader drone
             leader_trail_x.append(leader_pose[0])
             leader_trail_y.append(leader_pose[1])
@@ -193,6 +200,9 @@ class APF_IMP:
                     ax.scatter(pose[0], pose[1], c='b')
                     ax.text(pose[0], pose[1], drone_labels[i])
 
+                for s in trail_drones:
+                    ax.plot(drone_trail_x[f'Drone_{s}'], drone_trail_y[f'Drone_{s}'], 'k--')
+
             # Plot start and goal points on the trajectory
 
                 ax.plot(start[0], start[1], '*r', label='Start Position', markersize=10)
@@ -202,6 +212,7 @@ class APF_IMP:
                     ax.add_patch(obstacle_circle)
                     center_x, center_y = obstacle_circle.center
                     ax.plot(center_x, center_y, 'xk')
+                ax.plot([], [],'k--', label='Drone Trail') 
                 ax.plot([], [],'darkblue', alpha=0.7, label='APF Repulsion Field of Obstacle', linewidth=10)
                 ax.plot([],[], 'lightgreen', alpha=0.7, label='Local Deflection Field of Obstacle', linewidth=10)
                 plt.legend(loc='lower left', fontsize='large') 

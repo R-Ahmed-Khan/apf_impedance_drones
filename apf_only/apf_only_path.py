@@ -8,7 +8,7 @@ class APF_IMP:
         pass
 
     def simulate(self, num_drones=2, start_pos=(-3, 1), goal_pose=(6, -1), obstacles_pos=[[0.305, 0.528], [-0.305, -0.528]], \
-                 r_apf_list=[0.5, 0.5], d_sep=0.5, step=0.1, plot=True):
+                 r_apf_list=[0.5, 0.5], d_sep=0.45, step=0.1, plot=True, trail_drones=[1],rotation=0):
         '''
         Each drone uses the APF method independently for navigation.
         Drones start with a specific separation and orientation.
@@ -19,7 +19,7 @@ class APF_IMP:
         # Calculate initial positions with separation and orientation
         initial_positions = []
         for i in range(num_drones):
-            angle = (2 * np.pi * i) / num_drones  # Distribute drones in a circle around the start position
+            angle = (-2 * np.pi * i) / num_drones - rotation/5  # Distribute drones in a circle around the start position
             offset = np.array([d_sep * np.cos(angle), d_sep * np.sin(angle)])
             drone_start_pos = np.array(start_pos) + offset
             initial_positions.append(drone_start_pos)
@@ -41,6 +41,9 @@ class APF_IMP:
             ax.set_xticks(np.arange(-3.5, 7, 1))
             ax.set_yticks(np.arange(-3.5, 7, 1))
             ax.grid(True)
+        
+        drone_trails_x = [[] for _ in range(num_drones)]
+        drone_trails_y = [[] for _ in range(num_drones)]
 
         def update(frame):
             ax.clear()
@@ -58,6 +61,12 @@ class APF_IMP:
                     ax.scatter(drone_pose[0], drone_pose[1], c='b')
                     ax.text(drone_pose[0], drone_pose[1], f'Drone {i+1}', fontsize=12)
 
+                    if i + 1 in trail_drones:
+                        drone_trails_x[i].append(drone_pose[0])
+                        drone_trails_y[i].append(drone_pose[1])
+                        # Plot only one label per drone for the trail
+                        ax.plot(drone_trails_x[i], drone_trails_y[i], linestyle='--', color='black')
+                        
             ax.plot(start_pos[0], start_pos[1], '*r', label='Start Position', markersize=10)
             ax.plot(goal_pose[0], goal_pose[1], '*g', label='Goal Position', markersize=10)
 
@@ -67,7 +76,8 @@ class APF_IMP:
                 obstacle_circle = plt.Circle(obstacle, rr_apf, color='darkblue', alpha=0.7)
                 ax.add_patch(obstacle_circle)
                 ax.plot(obstacle[0], obstacle[1], 'xk')
-                
+            
+            ax.plot([], [],'k--', label='Drone Trail') 
             # Legend for the APF obstacle region
             ax.plot([], [], 'darkblue', alpha=0.7, label='APF Repulsion Field of Obstacle', linewidth=10)
             plt.legend(loc='lower left', fontsize='large')
