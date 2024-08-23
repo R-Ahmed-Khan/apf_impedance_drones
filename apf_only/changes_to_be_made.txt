@@ -1,0 +1,3 @@
+- drones orientation change in case 4, 5
+- obstacle arrangement to split drones (use apf only)
+- add path trails of each drone in plots
