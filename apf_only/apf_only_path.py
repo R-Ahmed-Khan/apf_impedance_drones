@@ -15,7 +15,7 @@ class APF_IMP:
         '''
         apf_instances = []
         drone_paths = []
-        
+
         # Calculate initial positions with separation and orientation
         initial_positions = []
         for i in range(num_drones):
@@ -24,9 +24,17 @@ class APF_IMP:
             drone_start_pos = np.array(start_pos) + offset
             initial_positions.append(drone_start_pos)
         
+        # Calculate individual goal positions based on the single goal position
+        goal_poses = []
+        for i in range(num_drones):
+            angle = (-2 * np.pi * i) / num_drones - rotation/5
+            offset = np.array([d_sep * np.cos(angle), d_sep * np.sin(angle)])
+            drone_goal_pos = np.array(goal_pose) + offset
+            goal_poses.append(drone_goal_pos)
+        
         # Initialize APF instances for each drone with their respective start positions
         for i in range(num_drones):
-            apf = APF_Improved(start=initial_positions[i], goal=goal_pose, obstacles=obstacles_pos, k_att=1.0, k_rep=0.8, \
+            apf = APF_Improved(start=initial_positions[i], goal=goal_poses[i], obstacles=obstacles_pos, k_att=1.0, k_rep=0.8, \
                                rr_list=r_apf_list, step_size=step, max_iters=1500, goal_threshold=0.2, is_plot=False)
             apf.path_plan()
             drone_paths.append(np.array(apf.path))
@@ -48,8 +56,8 @@ class APF_IMP:
         def update(frame):
             ax.clear()
             ax.grid(True)
-            ax.set_xlim(-3.5, 3.5)
-            ax.set_ylim(-3.5, 3.5)
+            ax.set_xlim(-3.5, 2.5)
+            ax.set_ylim(-1.5, 3.5)
             ax.set_xlabel('X (m)', fontsize=14)
             ax.set_ylabel('Y (m)', fontsize=14)
             ax.set_aspect('equal')
@@ -66,7 +74,7 @@ class APF_IMP:
                         drone_trails_y[i].append(drone_pose[1])
                         # Plot only one label per drone for the trail
                         ax.plot(drone_trails_x[i], drone_trails_y[i], linestyle='--', color='black')
-                        
+
             ax.plot(start_pos[0], start_pos[1], '*r', label='Start Position', markersize=10)
             ax.plot(goal_pose[0], goal_pose[1], '*g', label='Goal Position', markersize=10)
 
@@ -77,7 +85,7 @@ class APF_IMP:
                 ax.add_patch(obstacle_circle)
                 ax.plot(obstacle[0], obstacle[1], 'xk')
             
-            ax.plot([], [],'k--', label='Drone Trail') 
+            ax.plot([], [],'k--', label='Drone Trail using APF only') 
             # Legend for the APF obstacle region
             ax.plot([], [], 'darkblue', alpha=0.7, label='APF Repulsion Field of Obstacle', linewidth=10)
             plt.legend(loc='lower left', fontsize='large')

@@ -6,7 +6,7 @@ def get_drone_poses():
     '''
     num_drones = 4 (default)
     start_pos = initial point of APF trajectory
-    goal_pos = goal point of APF trajectory
+    goal_pos = goal point of  APF trajectory
     obstacles_pos = position of obstacles, add as much obstacles required in the given format e.g. [[2,2.9],[2.9,2],[obs_new_x,obs_new_y]]
     r_apf_list = radius list of APF repulsion field around obstacles
     r_imp_list = radius list of repulsive force applied to any drone in vicinty around obstacles
@@ -18,9 +18,10 @@ def get_drone_poses():
     instance = APF_IMP()      
     
     ## case #4 -- obstacles only -- more cluttered 
-    obstacles_pos = [[-1.8,1],[-1.8,-1],[-0.2,1],[-0.2,-1],[1.8,1],[1.8,-1]]  
-    drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,3.0), goal_pose=(3.0, -2.0), obstacles_pos=obstacles_pos, \
-                                               r_apf_list=[0.5,0.5,0.5,0.5,0.5,0.5], \
+    obstacles_pos = [[-2.5,2],[-1,2],[-1,0.6],[0,-0.4],[1,0.6]]  
+    drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,3.0), goal_pose=(2,-1), \
+                                            obstacles_pos=obstacles_pos, \
+                                               r_apf_list=[0.3,0.3,0.3,0.3,0.3], \
                                                 d_sep=0.6,step=0.03, plot=True,trail_drones=[2,4], rotation = 5*np.pi/4)
     
     # pprint(drone_poses_dict)

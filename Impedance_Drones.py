@@ -42,14 +42,36 @@ class APF_IMP:
 
         return imp_pose, imp_vel, time_prev
     
-    def impedance_obs(self, curr_drone_pos, obstacle_center, rr_imp, imp_vel_prev, time_prev):
-        F_coeff = 0.35
+    def impedance_obs(self, curr_drone_pos, obstacle_center, rr_imp, imp_vel_prev, time_prev, leader_pos):
+        # F_coeff = 0.40
+        # dir_to_center = obstacle_center - curr_drone_pos
+        # distance_to_obstacle = np.linalg.norm(dir_to_center)
+        
+        # if distance_to_obstacle < rr_imp:
+        #     dir_to_center /= distance_to_obstacle  # Normalize direction vector
+
+        #     # Calculate the deflection force away from the obstacle
+        #     deflection_distance = F_coeff * (rr_imp - distance_to_obstacle)  
+        #     avoidance_movement = -deflection_distance * dir_to_center
+
+        #     # Calculate the direction towards the leader
+        #     dir_to_leader = leader_pos - curr_drone_pos
+        #     dir_to_leader /= np.linalg.norm(dir_to_leader)  # Normalize direction vector
+
+        #     # Combine the avoidance movement with movement towards the leader
+        #     movement_towards_leader = 0.1 * dir_to_leader  # 0.1 is a small weight towards the leader
+        #     curr_drone_pos += avoidance_movement + movement_towards_leader
+        # else:
+        #     # If outside the rr_imp region, move towards the leader only
+        #     dir_to_leader = leader_pos - curr_drone_pos
+        #     curr_drone_pos += 0.25 * dir_to_leader / np.linalg.norm(dir_to_leader)
+        F_coeff = 0.45
         dir_to_center = obstacle_center - curr_drone_pos
         dir_to_center /= np.linalg.norm(dir_to_center)  # Normalize direction vector
         deflection_distance = F_coeff * rr_imp  
         curr_drone_pos -= deflection_distance * dir_to_center  
-
-        return curr_drone_pos    
+        
+        return curr_drone_pos 
 
     def simulate(self, num_drones=2, start_pos=(-3,1), goal_pose=(6,-1), obstacles_pos=[[0.305,0.528],[-0.305, -0.528]], \
                   r_apf_list=[0.5, 0.5], r_imp_list=[0.18, 0.18], d_sep=0.5, step=0.1, plot=True, trail_drones=[1], rotation=0):
@@ -141,8 +163,8 @@ class APF_IMP:
             if plot:
                 ax.clear()
                 ax.grid(True)
-                ax.set_xlim(-3.5, 3.5)
-                ax.set_ylim(-3.5, 3.5)
+                ax.set_xlim(-3.5, 2.5)
+                ax.set_ylim(-1.5, 3.5)
                 ax.set_xlabel('X (m)', fontsize=14)
                 ax.set_ylabel('Y (m)', fontsize=14)
                 ax.set_aspect('equal')  
@@ -165,10 +187,10 @@ class APF_IMP:
                     obstacle_center = obstacle_circle.center
                     rr_imp = r_imp_list[i // 2]  # Assuming each obstacle has an associated radius
                     
-                    if np.linalg.norm(drone_pose[:2] - obstacle_center) < (rr_imp + 0.2):
+                    if np.linalg.norm(drone_pose[:2] - obstacle_center) < (rr_imp + 0.25):
                         obstacle_avoided = True
                         # Move drone away from obstacle                    
-                        drone_pose[:2] = self.impedance_obs(drone_pose[:2], obstacle_center, rr_imp, imp_vel_prev, 1) 
+                        drone_pose[:2] = self.impedance_obs(drone_pose[:2], obstacle_center, rr_imp, imp_vel_prev, 1, leader_pose[:2]) 
                         
                         if plot:
                             center = obstacle_center

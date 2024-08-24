@@ -41,10 +41,10 @@ def get_drone_poses():
     #                                             d_sep=0.60, step=0.03, plot=True, trail_drones=[3,4],rotation=0)       
     
     ## case #4 -- obstacles only -- more cluttered 
-    obstacles_pos = [[-1.5,2],[-2,1],[0,1],[-1.5,0],[0,-1],[1,0]]  
-    drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,3.0), goal_pose=(3.0, -2.0), obstacles_pos=obstacles_pos, \
-                                               r_apf_list=[0.5,0.3,0.3,0.5,0.5,0.5], r_imp_list=[0.4,0.25,0.25,0.4,0.4,0.4], \
-                                                d_sep=0.50, step=0.03, plot=True, trail_drones=[2,4], rotation=5*np.pi/4)
+    obstacles_pos = [[-2.5,2],[-1,2],[-1,0.6],[0,-0.4],[1,0.6]]   
+    drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,3.0), goal_pose=(2.0, -1.0), obstacles_pos=obstacles_pos, \
+                                               r_apf_list=[0.45,0.45,0.45,0.45,0.45], r_imp_list=[0.28,0.28,0.28,0.28,0.28], \
+                                                d_sep=0.60, step=0.01, plot=True, trail_drones=[2,4], rotation=5*np.pi/4)
     
     # pprint(drone_poses_dict)
     # plot_drone_poses(drone_poses_dict)
