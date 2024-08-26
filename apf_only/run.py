@@ -15,24 +15,24 @@ def get_drone_poses():
     trail_drones = [1,2] ==> plots trails of drone 1 and 2 only
     rotation = 5*np.pi/4 ==> drone 1 is most forward
     '''
-    instance = APF_IMP()      
+    instance = APF_ONLY()      
     
     ## case #4 -- obstacles only -- more cluttered 
     obstacles_pos = [[-2.5,2],[-1,2],[-1,0.6],[0,-0.4],[1,0.6]]  
-    drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,3.0), goal_pose=(2,-1), \
+    drone_poses_dict = instance.simulate(num_drones=4, start_pos=(-3.0,3.0), goal_pose=(2,-1), \
                                             obstacles_pos=obstacles_pos, \
                                                r_apf_list=[0.3,0.3,0.3,0.3,0.3], \
-                                                d_sep=0.6,step=0.03, plot=True,trail_drones=[2,4], rotation = 5*np.pi/4)
+                                                d_sep=0.6,step=0.02, plot=True,trail_drones=[1,2,4], rotation = 5*np.pi/4)
     
     # pprint(drone_poses_dict)
     # plot_drone_poses(drone_poses_dict)
     
-    return drone_poses_dict, path, obstacles_pos
+    return drone_poses_dict, obstacles_pos
 
 def main():
 
-    drone_poses_dict, path, obstacles_pos= get_drone_poses()
-    print(path.shape[0])
+    drone_poses_dict, obstacles_pos= get_drone_poses()
+
     # print('shape = ', drone_poses_dict.shape[0])
     # Save drone poses dictionary to a file using pickle
     preprocessed_drone_poses = {}
@@ -43,13 +43,9 @@ def main():
         preprocessed_drone_poses[drone] = '\n'.join(preprocessed_poses)
 
     # Save preprocessed drone poses dictionary to a file
-    with open('drone_poses.txt', 'w') as f:
+    with open('apf_only/drone_poses.txt', 'w') as f:
         for drone, poses in preprocessed_drone_poses.items():
             f.write(f"{drone}:\n{poses}\n\n")
-    APF_norm = [np.linalg.norm(path[i] - path[i-1]) for i in range(1, len(path))]
-    APF_Trajectory = np.sum(APF_norm)
-    print('Trajectory APF = ', APF_Trajectory)
-
     drone_norms = {}
     for drone, poses in drone_poses_dict.items():
         distances = [np.linalg.norm(poses[i] - poses[i-1]) for i in range(1, len(poses))]

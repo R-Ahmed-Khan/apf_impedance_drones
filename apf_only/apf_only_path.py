@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from apf import APF_Improved, Vector2d
 
-class APF_IMP:
+class APF_ONLY:
     def __init__(self):
         pass
 
@@ -15,6 +15,7 @@ class APF_IMP:
         '''
         apf_instances = []
         drone_paths = []
+        goal_threshold = 0.2
 
         # Calculate initial positions with separation and orientation
         initial_positions = []
@@ -62,18 +63,27 @@ class APF_IMP:
             ax.set_ylabel('Y (m)', fontsize=14)
             ax.set_aspect('equal')
             
+            all_drones_at_goal = True
+
             for i, path in enumerate(drone_paths):
                 if frame < len(path):
                     drone_pose = path[frame]
-                    drone_poses[f'Drone_{i+1}'].append(drone_pose)
-                    ax.scatter(drone_pose[0], drone_pose[1], c='b')
-                    ax.text(drone_pose[0], drone_pose[1], f'Drone {i+1}', fontsize=12)
+                else:
+                    drone_pose = path[-1] # Stays at last position
 
-                    if i + 1 in trail_drones:
-                        drone_trails_x[i].append(drone_pose[0])
-                        drone_trails_y[i].append(drone_pose[1])
-                        # Plot only one label per drone for the trail
-                        ax.plot(drone_trails_x[i], drone_trails_y[i], linestyle='--', color='black')
+                drone_poses[f'Drone_{i+1}'].append(drone_pose)
+                ax.scatter(drone_pose[0], drone_pose[1], c='b')
+                ax.text(drone_pose[0], drone_pose[1], f'Drone {i+1}', fontsize=12)
+
+                if i + 1 in trail_drones:
+                    drone_trails_x[i].append(drone_pose[0])
+                    drone_trails_y[i].append(drone_pose[1])
+                    # Plot only one label per drone for the trail
+                    ax.plot(drone_trails_x[i], drone_trails_y[i], linestyle='--', color='black')
+                
+                # Check if the drone has reached the goal
+                if np.linalg.norm(drone_pose - goal_poses[i]) > goal_threshold:
+                    all_drones_at_goal = False
 
             ax.plot(start_pos[0], start_pos[1], '*r', label='Start Position', markersize=10)
             ax.plot(goal_pose[0], goal_pose[1], '*g', label='Goal Position', markersize=10)
@@ -85,13 +95,18 @@ class APF_IMP:
                 ax.add_patch(obstacle_circle)
                 ax.plot(obstacle[0], obstacle[1], 'xk')
             
-            ax.plot([], [],'k--', label='Drone Trail using APF only') 
+            ax.plot([], [],'k--', label='APF Trajectory') 
             # Legend for the APF obstacle region
             ax.plot([], [], 'darkblue', alpha=0.7, label='APF Repulsion Field of Obstacle', linewidth=10)
             plt.legend(loc='lower left', fontsize='large')
+            
+            # Stop the animation if all drones have reached the goal
+            if all_drones_at_goal:
+                anim.event_source.stop()
 
         if plot:
-            anim = FuncAnimation(fig, update, frames=range(len(drone_paths[0])), repeat=False)
+            # Update frames to the length of the longest path
+            anim = FuncAnimation(fig, update, frames=range(max(len(path) for path in drone_paths)), repeat=False)
             plt.show()
 
         return drone_poses

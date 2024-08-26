@@ -234,7 +234,7 @@ class APF_IMP:
                     ax.add_patch(obstacle_circle)
                     center_x, center_y = obstacle_circle.center
                     ax.plot(center_x, center_y, 'xk')
-                ax.plot([], [],'k--', label='Drone Trail') 
+                ax.plot([], [],'k--', label='SwarmPath Trajectory') 
                 ax.plot([], [],'darkblue', alpha=0.7, label='APF Repulsion Field of Obstacle', linewidth=10)
                 ax.plot([],[], 'lightgreen', alpha=0.7, label='Local Deflection Field of Obstacle', linewidth=10)
                 plt.legend(loc='lower left', fontsize='large') 
