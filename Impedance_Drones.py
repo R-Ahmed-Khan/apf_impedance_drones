@@ -123,7 +123,7 @@ class APF_IMP:
         imp_vel_prev = np.zeros(shape=(num_drones, 3))
         count = 0
         if plot:
-            fig, ax = plt.subplots(figsize=(7, 7))
+            fig, ax = plt.subplots(figsize=(8, 8))
             # Plot grid
             ax.set_xticks(np.arange(0, 6, 1))
             ax.set_yticks(np.arange(0, 6, 1))
@@ -164,7 +164,7 @@ class APF_IMP:
                 ax.clear()
                 ax.grid(True)
                 ax.set_xlim(-3.5, 2.5)
-                ax.set_ylim(-1.5, 3.5)
+                ax.set_ylim(-2.5, 3.5)
                 ax.set_xlabel('X (m)', fontsize=14)
                 ax.set_ylabel('Y (m)', fontsize=14)
                 ax.set_aspect('equal')  
@@ -237,7 +237,7 @@ class APF_IMP:
                 ax.plot([], [],'k--', label='SwarmPath Trajectory') 
                 ax.plot([], [],'darkblue', alpha=0.7, label='APF Repulsion Field of Obstacle', linewidth=10)
                 ax.plot([],[], 'lightgreen', alpha=0.7, label='Local Deflection Field of Obstacle', linewidth=10)
-                plt.legend(loc='lower left', fontsize='large') 
+                plt.legend(loc='upper left', fontsize='large', ncol=2) 
                 
             return []
         # print('-------------------------')

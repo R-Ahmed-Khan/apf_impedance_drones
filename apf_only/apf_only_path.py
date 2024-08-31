@@ -46,7 +46,7 @@ class APF_ONLY:
             drone_poses[f'Drone_{i+1}'] = []
 
         if plot:
-            fig, ax = plt.subplots(figsize=(7, 7))
+            fig, ax = plt.subplots(figsize=(8, 8))
             ax.set_xticks(np.arange(-3.5, 7, 1))
             ax.set_yticks(np.arange(-3.5, 7, 1))
             ax.grid(True)
@@ -58,7 +58,7 @@ class APF_ONLY:
             ax.clear()
             ax.grid(True)
             ax.set_xlim(-3.5, 2.5)
-            ax.set_ylim(-1.5, 3.5)
+            ax.set_ylim(-2.5, 3.5)
             ax.set_xlabel('X (m)', fontsize=14)
             ax.set_ylabel('Y (m)', fontsize=14)
             ax.set_aspect('equal')

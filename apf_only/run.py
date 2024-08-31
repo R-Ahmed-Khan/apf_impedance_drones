@@ -22,7 +22,7 @@ def get_drone_poses():
     drone_poses_dict = instance.simulate(num_drones=4, start_pos=(-3.0,3.0), goal_pose=(2,-1), \
                                             obstacles_pos=obstacles_pos, \
                                                r_apf_list=[0.3,0.3,0.3,0.3,0.3], \
-                                                d_sep=0.6,step=0.02, plot=True,trail_drones=[1,2,4], rotation = 5*np.pi/4)
+                                                d_sep=0.6,step=0.01, plot=True,trail_drones=[1,2,4], rotation = 5*np.pi/4)
     
     # pprint(drone_poses_dict)
     # plot_drone_poses(drone_poses_dict)

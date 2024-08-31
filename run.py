@@ -16,35 +16,39 @@ def get_drone_poses():
     rotation = 5*np.pi/4 ==> drone 1 is most forward
     '''
     instance = APF_IMP()
-    #obstacles_pos = [[-0.36, -0.64],[0.38, 0.69], [2, -0.8],[-2.02, 0.48]]  # case 1
-    #drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-4.0,1.5), goal_pose=(3.42, -1.55), obstacles_pos=obstacles_pos, r_apf=0.24, r_imp=0.2, d_sep=0.45, step=0.083, plot=True)
-    
-    # obstacles_pos = [[-0.004, 0.96],[0.076, -0.826], [1.9, -0.19],[-1.86, 0.57]]  # case 2
-    # drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-4.0,1.5), goal_pose=(3.42, -1.05), obstacles_pos=obstacles_pos, r_apf=0.24, r_imp=0.2, d_sep=0.45, step=0.087, plot=True)
-    
     # case #1 -- gates only 
-    # obstacles_pos = [[0.53, 1.03],[-0.53, -0.03]]  
-    # drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,3.0), goal_pose=(3.0, -2.0), obstacles_pos=obstacles_pos, \
-    #                                            r_apf_list=[0.32,0.32], r_imp_list=[0.26,0.26], \
-    #                                             d_sep=0.60, step=0.03, plot=True, trail_drones=[1,2],rotation=0) 
+    # obstacles_pos = [[0.03, 1.03],[-1.03, -0.03]]  
+    obstacles_pos = [[-0.12, 0.65],[-0.88, -0.65]]  
+    drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,1.5), goal_pose=(2.0,-1.5), obstacles_pos=obstacles_pos, \
+                                               r_apf_list=[0.32,0.32], r_imp_list=[0.26,0.26], \
+                                                d_sep=0.60, step=0.02, plot=True, trail_drones=[1,2],rotation=0) 
 
     # case #2 -- obstacles only 
     # obstacles_pos = [[-1.0,1.0],[1.0, 0.0]]  
-    # drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,3.0), goal_pose=(3.0, -2.0), obstacles_pos=obstacles_pos, \
+    # obstacles_pos = [[-2.0,0.6],[0.5, -0.4]]  
+    # drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,1.5), goal_pose=(2.0, -1.5), obstacles_pos=obstacles_pos, \
     #                                           r_apf_list=[0.32,0.32], r_imp_list=[0.22,0.22], \
-    #                                            d_sep=0.60, step=0.03, plot=True, trail_drones=[3,4],rotation=0)       
+    #                                            d_sep=0.60, step=0.02, plot=True, trail_drones=[3,4],rotation=0)       
 
-    ## case #3 -- obstacles only 
+    ## case #3 -- obstacles and gates  
     # obstacles_pos = [[0.53, 1.03],[-0.53, -0.03], [-1.0,1.0],[1.0, 0.0]]  
-    # drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,3.0), goal_pose=(3.0, -2.0), obstacles_pos=obstacles_pos, \
+    # obstacles_pos = [[-0.12, 0.65],[-0.88, -0.65],[-2.0,0.6],[0.5, -0.4]]  
+
+    # experimental
+    # obstacles_pos = [[-1.258,0.097],[1.221, -0.708],[-0.020,0.522],[-0.424, -0.712]]  
+    # drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,1.5), goal_pose=(2.294, -1.531), obstacles_pos=obstacles_pos, \
     #                                             r_apf_list=[0.32,0.32,0.32,0.32], r_imp_list=[0.26,0.26,0.22,0.22], \
-    #                                             d_sep=0.60, step=0.03, plot=True, trail_drones=[3,4],rotation=0)       
+    #                                             d_sep=0.60, step=0.02, plot=True, trail_drones=[3,4],rotation=0)       
     
     ## case #4 -- obstacles only -- more cluttered 
-    obstacles_pos = [[-2.5,2],[-1,2],[-1,0.6],[0,-0.4],[1,0.6]]   
-    drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,3.0), goal_pose=(2.0, -1.0), obstacles_pos=obstacles_pos, \
-                                               r_apf_list=[0.45,0.45,0.45,0.45,0.45], r_imp_list=[0.28,0.28,0.28,0.28,0.28], \
-                                                d_sep=0.60, step=0.01, plot=True, trail_drones=[2,4], rotation=5*np.pi/4)
+    # obstacles_pos = [[-2.5,2],[-1,2],[-1,0.6],[0,-0.4],[1,0.6]]  
+    # r_apf_list=[0.45,0.45,0.45,0.45,0.45], r_imp_list=[0.28,0.28,0.28,0.28,0.28] , start_pos=(-3.0,3.0), goal_pose=(2.0,-1.0)
+
+    # experimental
+    # obstacles_pos = [[-1.075, 0.327],[0.458, -0.973],[0.493,0.436],[-0.804, -0.679]] # start_pos=(-3.0,1.5), goal_pose=(2.294, -1.531),
+    # drone_poses_dict, path = instance.simulate(num_drones=4, start_pos=(-3.0,1.5), goal_pose=(2.294, -1.531), obstacles_pos=obstacles_pos, \
+    #                                            r_apf_list=[0.35,0.32,0.32,0.32], r_imp_list=[0.26,0.26,0.22,0.22], \
+    #                                             d_sep=0.60, step=0.01, plot=True, trail_drones=[2,4], rotation=0)
     
     # pprint(drone_poses_dict)
     # plot_drone_poses(drone_poses_dict)
